@@ -27,6 +27,9 @@
                  [cider/cider-nrepl          "0.7.0"]
                  ]
 
+  :uberimage {:base-image "mastodonc/basejava"
+              :tag "mastodonc/kixi.eventlog"}
+
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.7"]]
                    :source-paths ["dev" "src"]}
