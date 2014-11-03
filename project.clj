@@ -25,6 +25,14 @@
                  [prismatic/schema           "0.3.1"]
                  [org.clojure/tools.nrepl    "0.2.6"]
                  [cider/cider-nrepl          "0.7.0"]
+
+                 ;; Logging
+                 [org.clojure/tools.logging      "0.3.0"]
+                 [ch.qos.logback/logback-classic "1.1.2"]
+                 [org.slf4j/jul-to-slf4j         "1.7.7"]
+                 [org.slf4j/jcl-over-slf4j       "1.7.7"]
+                 [org.slf4j/log4j-over-slf4j     "1.7.7"]
+
                  ]
 
   :uberimage {:base-image "mastodonc/basejava"
