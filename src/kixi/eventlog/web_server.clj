@@ -8,6 +8,8 @@
 
 (defroutes all-routes
   (POST "/events" []  index-resource)
+  (GET "/_elb_status" []  "ALL GOOD")
+  (POST "/_elb_status" []  "ALL GOOD")
   (not-found {:headers {"Content-Type" "application/json"}
               :body "{\"error\": \"No Such Endpoint\"}"}))
 
