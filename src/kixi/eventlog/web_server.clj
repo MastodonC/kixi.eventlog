@@ -15,7 +15,7 @@
   component/Lifecycle
   (start [this]
     (println "Starting Webserver")
-    (let [server (http-kit/run-server (wrap-defaults #'all-routes api-defaults) {:verbose? true :port 8810 :max-body (* 16 1024 1024)})]
+    (let [server (http-kit/run-server (wrap-defaults #'all-routes api-defaults) {:verbose? true :port 80 :max-body (* 16 1024 1024)})]
       (assoc this ::server server)))
   (stop [this]
     (println "Stopping Webserver")

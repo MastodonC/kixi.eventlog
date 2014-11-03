@@ -28,6 +28,7 @@
                  ]
 
   :uberimage {:base-image "mastodonc/basejava"
+              :instructions ["EXPOSE 4001"]
               :tag "mastodonc/kixi.eventlog"}
 
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
