@@ -32,6 +32,7 @@
 
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.7"]]
+                   :plugins [[com.palletops/uberimage "0.3.0"]]
                    :source-paths ["dev" "src"]}
              :uberjar {:main kixi.eventlog.main
                        :aot [kixi.eventlog.main]}})
