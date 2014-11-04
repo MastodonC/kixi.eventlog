@@ -37,6 +37,8 @@
 
   :uberimage {:base-image "mastodonc/basejava"
               :instructions ["EXPOSE 4001"]
+              :cmd ["/bin/bash" "/start-eventlog"]
+              :files {"start-eventlog" "docker/start-eventlog.sh"}
               :tag "mastodonc/kixi.eventlog"}
 
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
