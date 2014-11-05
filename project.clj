@@ -5,7 +5,11 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure        "1.6.0"]
                  [joda-time                  "2.5"]
-                 [amazonica                  "0.2.29" :exclusions [joda-time]]
+                 [com.fasterxml.jackson.core/jackson-databind "2.4.0"]
+                 [amazonica                  "0.2.29" :exclusions [joda-time
+                                                                   com.fasterxml.jackson.core/jackson-core
+                                                                   com.fasterxml.jackson.core/jackson-annotations
+                                                                   ]]
                  [mastodonc/clj-kafka        "0.2.6-0.8.1.1"]
                  [compojure                  "1.2.1"]
 
@@ -22,18 +26,19 @@
 
                  [com.stuartsierra/component "0.2.2"]
 
-                 [prismatic/schema           "0.3.1"]
+                 [prismatic/schema           "0.3.2"]
                  [org.clojure/tools.nrepl    "0.2.6"]
                  [cider/cider-nrepl          "0.7.0"]
 
+
                  ;; Logging
-                 [org.clojure/tools.logging      "0.3.0"]
+                 [org.clojure/tools.logging      "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.2"]
                  [org.slf4j/jul-to-slf4j         "1.7.7"]
                  [org.slf4j/jcl-over-slf4j       "1.7.7"]
                  [org.slf4j/log4j-over-slf4j     "1.7.7"]
 
-                 ]
+                 [net.logstash.logback/logstash-logback-encoder "3.3"]]
 
   :uberimage {:base-image "mastodonc/basejava"
               :instructions ["EXPOSE 4001"]

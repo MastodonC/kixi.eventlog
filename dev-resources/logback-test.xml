@@ -34,6 +34,14 @@
     </filter>
   </appender>
 
+  <!-- Logstash output -->
+  <appender name="LOGSTASH" class="ch.qos.logback.classic.net.SocketAppender">
+    <remoteHost>{{LOGSTASH_PORT_3828_TCP_ADDR}}</remoteHost>
+    <port>{{LOGSTASH_PORT_3828_TCP_PORT</port>
+    <reconnectionDelay>30000</reconnectionDelay>
+    <includeCallerData>false</includeCallerData>
+  </appender>
+
   <!-- Enable FILE and STDOUT appenders for all log messages.
        By default, only log at level INFO and above. -->
   <root level="DEBUG">
