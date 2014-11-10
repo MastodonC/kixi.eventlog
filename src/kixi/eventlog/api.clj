@@ -1,9 +1,9 @@
 (ns kixi.eventlog.api
   (:require [liberator.core :refer (defresource)]))
 
-(defn handle-created [producer ctx]
+(defn handle-created [publish-fn ctx]
+  (publish-fn (get-in ctx [:request :body])))
 
-  )
 (defresource index-resource [producer]
   :allowed-methods #{:post :get}
   :available-media-types ["application/json"]

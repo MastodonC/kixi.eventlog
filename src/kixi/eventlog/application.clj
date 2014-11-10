@@ -19,13 +19,14 @@
 (defn new-system
   ([] (let []
        (-> (map->EventLogApi
-            {:web-server  (web/new-server)
-             :repl-server (Object.) ; dummy - replaced when invoked via controller.main
-             :zookeeper   (new-zk-client "localhost" 2181)
-             :producer    (new-producer)
-             :event-topic (new-topic "events")})
+            {:web-server   (web/new-server)
+             :repl-server  (Object.) ; dummy - replaced when invoked via controller.main
+             :zookeeper    (new-zk-client "localhost" 2181)
+             :producer     (new-producer)
+             :events-topic (new-topic "events")})
            (component/system-using
             {:producer [:zookeeper]
-             :event-topic [:producer :zookeeper]}))))
+             :events-topic [:producer :zookeeper]
+             :web-server {:topic :events-topic}}))))
   ([extra-components]
      (merge (new-system) extra-components)))

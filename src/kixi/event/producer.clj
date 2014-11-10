@@ -26,7 +26,7 @@
 (defrecord EventTopic [name]
   component/Lifecycle
   (start [this]
-    (println "Starting EventTopic " (:name this) ":" (:zookeeper this))
+    (println "Starting EventTopic " (:name this))
     (try
       (create-topic (:zookeeper this) name)
       (catch kafka.common.TopicExistsException _
@@ -38,7 +38,7 @@
 
   IPublish
   (-publish [this event]
-    (p/send-message (-> this :producer ::instance) (:name this) (.getBytes event))))
+    (p/send-message (-> this :producer ::instance) (p/message (:name this) (.bytes event)))))
 
 
 (defn publish [topic event]
