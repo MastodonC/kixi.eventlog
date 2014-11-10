@@ -14,11 +14,11 @@
    (not-found {:headers {"Content-Type" "application/json"}
                :body "{\"error\": \"No Such Endpoint\"}"})))
 
-(defrecord WebServer []
+(defrecord WebServer [opts]
   component/Lifecycle
   (start [this]
     (println "Starting Webserver")
-    (let [server (http-kit/run-server (wrap-defaults (all-routes (:producer this)) api-defaults) {:verbose? true :port 80 :max-body (* 16 1024 1024)})]
+    (let [server (http-kit/run-server (wrap-defaults (all-routes (:producer this)) api-defaults) opts)]
       (println server)
       (assoc this ::server server)))
   (stop [this]
@@ -27,4 +27,7 @@
       (close-fn))))
 
 (defn new-server []
-  (->WebServer))
+  (->WebServer {:verbose? true
+                :port 8080
+                :max-body
+                (* 16 1024 1024)}))

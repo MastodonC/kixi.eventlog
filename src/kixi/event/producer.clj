@@ -20,7 +20,8 @@
                         "partitioner.class" "kafka.producer.DefaultPartitioner"})))
   (stop [this]
     (println "Stopping EventProducer")
-    (when-let [i (::instance this)] (.close i))))
+    (when-let [i (::instance this)] (.close i))
+    (dissoc this ::instance)))
 
 (defrecord EventTopic [name]
   component/Lifecycle
@@ -29,9 +30,12 @@
     (try
       (create-topic (:zookeeper this) name)
       (catch kafka.common.TopicExistsException _
-        (log/info "events topic already exists"))))
+        (log/info "events topic already exists")))
+    this)
   (stop [this]
-    (println "Stopping EventTopic" (:name this)))
+    (println "Stopping EventTopic" (:name this))
+    this)
+
   IPublish
   (-publish [this event]
     (p/send-message (-> this :producer ::instance) (:name this) (.getBytes event))))
