@@ -10,7 +10,7 @@
                                                                    com.fasterxml.jackson.core/jackson-core
                                                                    com.fasterxml.jackson.core/jackson-annotations
                                                                    ]]
-                 [mastodonc/clj-kafka        "0.2.6-0.8.1.1"]
+                 [mastodonc/clj-kafka        "0.2.6-0.8.1.1" :exclusions [org.slf4j/slf4j-log4j12]]
                  [compojure                  "1.2.1"]
 
                  [commons-codec              "1.9"] ;; FIXME - ring-defaults needs this, but doesn't declare it?
@@ -49,6 +49,7 @@
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.7"]]
                    :plugins [[com.palletops/uberimage "0.3.0"]]
-                   :source-paths ["dev" "src"]}
+                   :source-paths ["dev" "src"]
+                   :resource-paths ["dev-resources" "resources"]}
              :uberjar {:main kixi.eventlog.main
                        :aot [kixi.eventlog.main]}})
