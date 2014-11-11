@@ -4,13 +4,11 @@
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [kixi.eventlog.api :refer [index-resource]]
             [org.httpkit.server :as http-kit]
-            [com.stuartsierra.component :as component]
-            [kixi.event.producer :refer [publish]]
-            ))
+            [com.stuartsierra.component :as component]))
 
-(defn all-routes [topic]
+(defn all-routes [publish-fn]
   (routes
-   (POST "/events" [] (index-resource (partial publish topic)))
+   (POST "/events" [] (index-resource publish-fn))
    (GET "/_elb_status" []  "ALL GOOD")
    (POST "/_elb_status" []  "ALL GOOD")
    (not-found {:headers {"Content-Type" "application/json"}

@@ -1,14 +1,10 @@
 (ns kixi.event.producer
  (:require [clj-kafka.core :as kafka]
            [clj-kafka.producer :as p]
-           [kixi.event.topic :refer [create-topic]]
-           [com.stuartsierra.component :as component]
            [kixi.event.zookeeper :as zk]
-           [clojure.tools.logging :as log])
+           [clojure.tools.logging :as log]
+           [com.stuartsierra.component :as component])
  (:import [kafka.admin AdminUtils]))
-
-(defprotocol IPublish
-  (-publish [topic event]))
 
 (defrecord EventProducer []
   component/Lifecycle
@@ -23,29 +19,5 @@
     (when-let [i (::instance this)] (.close i))
     (dissoc this ::instance)))
 
-(defrecord EventTopic [name]
-  component/Lifecycle
-  (start [this]
-    (println "Starting EventTopic " (:name this))
-    (try
-      (create-topic (:zookeeper this) name)
-      (catch kafka.common.TopicExistsException _
-        (log/info "events topic already exists")))
-    this)
-  (stop [this]
-    (println "Stopping EventTopic" (:name this))
-    this)
-
-  IPublish
-  (-publish [this event]
-    (p/send-message (-> this :producer ::instance) (p/message (:name this) (.bytes event)))))
-
-
-(defn publish [topic event]
-  (-publish topic event))
-
 (defn new-producer []
   (->EventProducer))
-
-(defn new-topic [name]
-  (->EventTopic name))
