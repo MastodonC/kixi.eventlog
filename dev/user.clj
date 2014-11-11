@@ -1,7 +1,6 @@
 (ns user
   (:require
 
-
    ;; DO NOT ADD ANYTHING HERE THAT MIGHT REMOTELY HAVE A COMPILATION ERROR.
    ;; THIS IS TO ENSURE WE CAN ALWAYS GET A REPL STARTED.
    ;;
@@ -20,7 +19,7 @@
   ;; even in the presence of compilation errors.
   (require '[kixi.eventlog.application])
 
-  (let [new-system (resolve 'kixi.eventlog.application/new-system)
+  (let [new-system (resolve 'kixi.eventlog.application/new-webapp)
         instance (resolve 'kixi.eventlog.application/instance)]
     (alter-var-root instance
                     (constantly (new-system)))))

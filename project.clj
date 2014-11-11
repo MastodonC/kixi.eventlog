@@ -40,16 +40,27 @@
 
                  [net.logstash.logback/logstash-logback-encoder "3.3"]]
 
-  :uberimage {:base-image "mastodonc/basejava"
-              :instructions ["EXPOSE 4001"]
-              :cmd ["/bin/bash" "/start-eventlog"]
-              :files {"start-eventlog" "docker/start-eventlog.sh"}
-              :tag "mastodonc/kixi.eventlog"}
+  :aliases {"uberimage" ["do"
+                        ["with-profile" "webapp" "uberimage"]
+                        ["with-profile" "listener" "uberimage"]]}
 
+  :plugins [[com.palletops/uberimage "0.3.0"]]
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.7"]]
                    :plugins [[com.palletops/uberimage "0.3.0"]]
                    :source-paths ["dev" "src"]
                    :resource-paths ["dev-resources" "resources"]}
-             :uberjar {:main kixi.eventlog.main
-                       :aot [kixi.eventlog.main]}})
+             :webapp {:uberjar {:main kixi.eventlog.webapp-main
+                                :aot [kixi.eventlog.webapp-main]}
+                      :uberimage {:base-image "mastodonc/basejava"
+                                  :instructions ["EXPOSE 4001"]
+                                  :cmd ["/bin/bash" "/start-eventlog"]
+                                  :files {"start-eventlog" "docker/start-eventlog.sh"}
+                                  :tag "mastodonc/kixi.eventlog.webapp"}}
+             :listener {:uberjar {:main kixi.eventlog.listener-main
+                                  :aot [kixi.eventlog.listener-main]}
+                        :uberimage {:base-image "mastodonc/basejava"
+                                    :instructions ["EXPOSE 4001"]
+                                    :cmd ["/bin/bash" "/start-eventlog"]
+                                    :files {"start-eventlog" "docker/start-eventlog.sh"}
+                                    :tag "mastodonc/kixi.eventlog.listener"}}})
