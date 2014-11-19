@@ -3,6 +3,7 @@
             [compojure.route :refer [not-found]]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [kixi.eventlog.api :refer [index-resource]]
+            [kixi.event.topic :refer [publish]]
             [org.httpkit.server :as http-kit]
             [com.stuartsierra.component :as component]))
 
@@ -19,7 +20,7 @@
   (start [this]
     (println "Starting Webserver")
     (let [server (http-kit/run-server (wrap-defaults
-                                       (all-routes (:topic this))
+                                       (all-routes (partial publish (:topic this)))
                                        api-defaults) opts)]
       (assoc this ::server server)))
   (stop [this]

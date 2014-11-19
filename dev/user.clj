@@ -19,7 +19,7 @@
   ;; even in the presence of compilation errors.
   (require '[kixi.eventlog.application])
 
-  (let [new-system (resolve 'kixi.eventlog.application/new-webapp)
+  (let [new-system (resolve 'kixi.eventlog.application/new-system)
         instance (resolve 'kixi.eventlog.application/instance)]
     (alter-var-root instance
                     (constantly (new-system)))))

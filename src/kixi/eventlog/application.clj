@@ -17,7 +17,7 @@
     (println "Stopping EventLogApi")
     (component/stop-system this (keys this))))
 
-(defn new-webapp
+(defn new-system
   ([] (let []
        (-> (map->EventLogApi
             {:web-server   (web/new-server)
@@ -28,20 +28,6 @@
            (component/system-using
             {:producer [:zookeeper]
              :events-topic [:producer :zookeeper]
-             :web-server {:topic :events-topic}}))))
-  ([extra-components]
-     (merge (new-system) extra-components)))
-
-(defn new-listener
-  ([] (let []
-       (-> (map->EventLogApi
-            {:repl-server  (Object.) ; dummy - replaced when invoked via controller.main
-             :zookeeper    (new-zk-client "localhost" 2181)
-             :consumer     (new-consumer)
-             :events-topic (new-topic "events")})
-           (component/system-using
-            {:producer [:zookeeper]
-             :events-topic [:consumer :zookeeper]
              :web-server {:topic :events-topic}}))))
   ([extra-components]
      (merge (new-system) extra-components)))

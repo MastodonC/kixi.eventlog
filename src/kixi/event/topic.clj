@@ -1,5 +1,6 @@
 (ns kixi.event.topic
-  (:require [clj-kafka.producer :as p]
+  (:require [clj-kafka.core :as kafka]
+            [clj-kafka.producer :as p]
             [clj-kafka.consumer.zk :as c]
             [com.stuartsierra.component :as component]
             [clojure.tools.logging :as log]))
@@ -10,21 +11,19 @@
 
 (defn create-topic [{:keys [opts]} topic-name & args]
   (let [{:keys [num-partitions replication-factor topic-config]
-         :or {num-partitions 3 replication-factor 2 topic-config (java.util.Properties.)}} opts
+         :or {num-partitions 3 replication-factor 2 topic-config {}}} opts
          client (org.I0Itec.zkclient.ZkClient. (get opts "zookeeper.connect")
                                                10000 ; sessionTimeoutMs
                                                10000 ; connectionTimeoutMs
                                                kafka.utils.ZKStringSerializer$/MODULE$)]
     (try
-      (kafka.admin.AdminUtils/createTopic client topic-name num-partitions replication-factor topic-config)
+      (kafka.admin.AdminUtils/createTopic client
+                                          topic-name
+                                          num-partitions
+                                          replication-factor
+                                          (kafka/as-properties topic-config))
       (finally
         (.close client)))))
-
-(defprotocol IPublish
-  (-publish [topic event]))
-
-(defprotocol IConsume
-  (-consume [topic]))
 
 (defrecord EventTopic [name]
   component/Lifecycle
@@ -37,13 +36,14 @@
     this)
   (stop [this]
     (println "Stopping EventTopic" (:name this))
-    this)
-  IPublish
-  (-publish [this event]
-    (p/send-message (-> this :producer ::instance) (p/message (:name this) (.bytes event)))))
+    this))
 
-(defn consume [topic n]
-  (-consume topic))
+(defn publish [topic event]
+  (println "TT:" topic)
+  (let [producer (-> topic :producer :instance)
+        topic-name (-> topic :name)]
+    (log/info "p:" producer " t:" topic-name)
+    (p/send-message producer (p/message topic-name (.bytes event)))))
 
 (defn new-topic [name]
   (->EventTopic name))

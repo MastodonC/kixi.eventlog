@@ -1,19 +1,31 @@
 (ns kixi.event.consumer
-  (:require [clj-kafka.core :as kafka]
+  (:require [clojure.core.async :refer (chan <! >! thread go-loop timeout alts! close! put! <!! >!!)]
+            [clj-kafka.core :as kafka]
             [clj-kafka.consumer.zk :as c]
-            [kixi.event.topic :refer [create-topic]]
             [com.stuartsierra.component :as component]
             [kixi.event.zookeeper :as zk]
             [clojure.tools.logging :as log]))
 
-(defrecord EventConsumer []
+(defrecord EventConsumer [consumer-config batch-size]
   component/Lifecycle
-  (start [this]
-    (println "Starting EventConsumer"))
+  (start [{:keys [zookeeper] :as this}]
+    (println "Starting EventConsumer")
+    (let [consumer        (c/consumer (merge consumer-config (:opts zookeeper)))
+          topic-name      (-> this :topic :name)
+          topic-count-map {topic-name (:thread-count consumer-config)}
+          streams         (-> (.createMessageStreams topic-count-map)
+                              (get topic-name))]
+      (doseq [stream streams]
+        (thread
+          (c/messages )
+          )
+        )
+      )
+    (assoc this ::consumer ))
   (stop [this]
     (println "Stopping EventConsumer")
-    (when-let [i (::instance this)] (.close i))
-    (dissoc this ::instance)))
+    (when-let [i (::instance this)] (.shutdown i))
+    (dissoc this ::consumer)))
 
-(defn new-consumer []
-  (->EventConsumer))
+(defn new-consumer [batch-size]
+  (->EventConsumer batch-size))
