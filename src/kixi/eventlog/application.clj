@@ -18,13 +18,15 @@
     (component/stop-system this (keys this))))
 
 (defn new-system
-  ([] (let []
+  ([] (let [zookeeper-host (or (System/getenv "ZK01_PORT_2181_TCP_ADDR") "localhost")
+            zookeeper-port (Integer/valueOf (or (System/getenv "ZK01_PORT_2181_TCP_PORT") "2181"))
+            topic (or (System/getenv "TOPIC") "events")]
        (-> (map->EventLogApi
             {:web-server   (web/new-server)
              :repl-server  (Object.) ; dummy - replaced when invoked via controller.main
-             :zookeeper    (new-zk-client "localhost" 2181)
+             :zookeeper    (new-zk-client zookeeper-host zookeeper-port)
              :producer     (new-producer)
-             :events-topic (new-topic "events")})
+             :events-topic (new-topic topic)})
            (component/system-using
             {:producer [:zookeeper]
              :events-topic [:producer :zookeeper]

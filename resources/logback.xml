@@ -23,8 +23,8 @@
   </appender>
 
    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-      <remoteHost>${LOGSTASH_PORT_4560_TCP_ADDR}</remoteHost>
-      <port>${LOGSTASH_PORT_4560_TCP_PORT}</port>
+      <remoteHost>${LOGSTASH01_PORT_4560_TCP_ADDR}</remoteHost>
+      <port>${LOGSTASH01_PORT_4560_TCP_PORT}</port>
 
       <!-- encoder is required -->
       <encoder class="net.logstash.logback.encoder.LogstashEncoder" />

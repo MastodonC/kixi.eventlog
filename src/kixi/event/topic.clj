@@ -11,7 +11,7 @@
 
 (defn create-topic [{:keys [opts]} topic-name & args]
   (let [{:keys [num-partitions replication-factor topic-config]
-         :or {num-partitions 3 replication-factor 2 topic-config {}}} opts
+         :or {num-partitions 1 replication-factor 1 topic-config {}}} opts
          client (org.I0Itec.zkclient.ZkClient. (get opts "zookeeper.connect")
                                                10000 ; sessionTimeoutMs
                                                10000 ; connectionTimeoutMs
@@ -32,7 +32,7 @@
     (try
       (create-topic (:zookeeper this) name)
       (catch kafka.common.TopicExistsException _
-        (log/info "events topic already exists")))
+        (log/info (:name this) " topic already exists")))
     this)
   (stop [this]
     (println "Stopping EventTopic" (:name this))
@@ -42,7 +42,6 @@
   (println "TT:" topic)
   (let [producer (-> topic :producer :instance)
         topic-name (-> topic :name)]
-    (log/info "p:" producer " t:" topic-name)
     (p/send-message producer (p/message topic-name (.bytes event)))))
 
 (defn new-topic [name]
