@@ -39,8 +39,6 @@
                  [org.slf4j/jcl-over-slf4j                      "1.7.7"]
                  [org.slf4j/log4j-over-slf4j                    "1.7.7"]
 
-                 [baldr "0.1.1"]
-
                  [net.logstash.logback/logstash-logback-encoder "3.4"]]
 
   :plugins [[com.palletops/uberimage "0.3.0"]]
