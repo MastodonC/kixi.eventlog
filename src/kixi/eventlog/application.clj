@@ -19,16 +19,17 @@
     (component/stop-system this (keys this))))
 
 (defn new-system
-  ([] (let [zookeeper-host (or (System/getenv "ZK01_PORT_2181_TCP_ADDR") "localhost")
-            zookeeper-port (Integer/valueOf (or (System/getenv "ZK01_PORT_2181_TCP_PORT") "2181"))
-            topic (or (System/getenv "TOPIC") "events")
-            num-partitions (Integer/parseInt (or (System/getenv "TOPIC_NUM_PARTITIONS") "3"))
-            replication-factor (Integer/parseInt (or (System/getenv "TOPIC_REPLICATION_FACTOR") "3"))]
+  ([] (let [zookeeper-host     (or (System/getenv "ZK01_PORT_2181_TCP_ADDR") "localhost")
+            zookeeper-port     (Integer/valueOf (or (System/getenv "ZK01_PORT_2181_TCP_PORT") "2181"))
+            topic              (or (System/getenv "TOPIC") "events")
+            num-partitions     (Integer/parseInt (or (System/getenv "TOPIC_NUM_PARTITIONS") "3"))
+            replication-factor (Integer/parseInt (or (System/getenv "TOPIC_REPLICATION_FACTOR") "3"))
+            max-message-size   (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1000000")] ;; annoying inconsistency Int vs String.
        (-> (map->EventLogApi
             {:web-server   (web/new-server)
              :repl-server  (Object.) ; dummy - replaced when invoked via controller.main
              :zookeeper    (new-zk-client zookeeper-host zookeeper-port)
-             :producer     (new-producer)
+             :producer     (new-producer :max-message-size max-message-size)
              :events-topic (new-topic topic
                                       :num-partitions num-partitions
                                       :replication-factor replication-factor
