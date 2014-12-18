@@ -9,13 +9,12 @@
 
 ;; seems overly complex, but works...
 
-(defn create-topic [{:keys [opts]} topic-name & args]
-  (let [{:keys [num-partitions replication-factor topic-config]
-         :or {num-partitions 1 replication-factor 1 topic-config {}}} opts
-         client (org.I0Itec.zkclient.ZkClient. (get opts "zookeeper.connect")
-                                               10000 ; sessionTimeoutMs
-                                               10000 ; connectionTimeoutMs
-                                               kafka.utils.ZKStringSerializer$/MODULE$)]
+(defn create-topic [{:keys [zookeeper num-partitions replication-factor topic-config]} topic-name ]
+  (let [zk-connect (get-in zookeeper[:opts "zookeeper.connect"])
+        client     (org.I0Itec.zkclient.ZkClient. zk-connect
+                                                  10000 ; sessionTimeoutMs
+                                                  10000 ; connectionTimeoutMs
+                                                  kafka.utils.ZKStringSerializer$/MODULE$)]
     (try
       (kafka.admin.AdminUtils/createTopic client
                                           topic-name
@@ -30,7 +29,7 @@
   (start [this]
     (log/info "Starting EventTopic " (:name this))
     (try
-      (create-topic (:zookeeper this) name)
+      (create-topic this name)
       (catch kafka.common.TopicExistsException _
         (log/info (:name this) " topic already exists")))
     this)
@@ -43,5 +42,6 @@
         topic-name (-> topic :name)]
     (p/send-message producer (p/message topic-name (.bytes event)))))
 
-(defn new-topic [name]
-  (->EventTopic name))
+(defn new-topic [name & {:as opts}]
+  (map->EventTopic (assoc opts
+                     :name name)))
