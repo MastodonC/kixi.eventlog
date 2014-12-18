@@ -4,16 +4,17 @@
             [clojure.tools.nrepl.server :as nrepl-server]
             [cider.nrepl                :refer (cider-nrepl-handler)]
             [kixi.eventlog.application  :as kixi]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [clojure.tools.logging :as log]))
 
 (defrecord ReplServer [config]
   component/Lifecycle
   (start [this]
-    (println "Starting REPL server " config)
+    (log/info "Starting REPL server " config)
     (assoc this :repl-server
            (apply nrepl-server/start-server :handler cider-nrepl-handler (flatten (seq config)))))
   (stop [this]
-    (println "Stopping REPL server with " config)
+    (log/info "Stopping REPL server with " config)
     (nrepl-server/stop-server (:repl-server this))
     (dissoc this :repl-server)))
 
@@ -26,7 +27,7 @@
               (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
 (defn -main [& args]
-  (println "Starting kixi.eventlog")
+  (log/info "Starting kixi.eventlog")
   (let [[opts args banner]
         (cli args
              ["-h" "--help" "Show help"
@@ -36,7 +37,7 @@
              ["-r" "--repl-port" "REPL server listen port"
               :default 4001 :parse-fn #(Integer. %)])]
     (when (:help opts)
-      (println banner)
+      (log/info banner)
       (System/exit 0))
     (alter-var-root #'kixi/instance (fn [_]
                                       (component/start

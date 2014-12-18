@@ -1,15 +1,16 @@
 (ns kixi.event.zookeeper
   (:require [clj-kafka.zk]
             [com.stuartsierra.component :as component]
-            [zookeeper :as zk]))
+            [zookeeper :as zk]
+            [clojure.tools.logging :as log]))
 
 (defrecord ZookeeperClient [opts]
   component/Lifecycle
   (start [this]
-    (println "Starting ZookeeperClient")
+    (log/info "Starting ZookeeperClient")
     this)
   (stop [this]
-    (println "Stopping EventClient")))
+    (log/info "Stopping EventClient")))
 
 (defn connect [{:keys [opts]}]
   (zk/connect (get opts "zookeeper.connect")))

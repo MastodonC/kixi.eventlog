@@ -4,17 +4,18 @@
             [kixi.event.zookeeper :refer [new-zk-client]]
             [kixi.event.producer :refer [new-producer]]
             [kixi.event.consumer :refer [new-consumer]]
-            [kixi.event.topic :refer [new-topic]]))
+            [kixi.event.topic :refer [new-topic]]
+            [clojure.tools.logging :as log]))
 
 (def instance)
 
 (defrecord EventLogApi []
   component/Lifecycle
   (start [this]
-    (println "Starting EventLogApi")
+    (log/info "Starting EventLogApi")
     (component/start-system this (keys this)))
   (stop [this]
-    (println "Stopping EventLogApi")
+    (log/info "Stopping EventLogApi")
     (component/stop-system this (keys this))))
 
 (defn new-system

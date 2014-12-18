@@ -5,7 +5,8 @@
             [kixi.eventlog.api :refer [index-resource]]
             [kixi.event.topic :refer [publish]]
             [org.httpkit.server :as http-kit]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [clojure.tools.logging :as log]))
 
 (defn all-routes [publish-fn]
   (routes
@@ -18,13 +19,13 @@
 (defrecord WebServer [opts]
   component/Lifecycle
   (start [this]
-    (println "Starting Webserver")
+    (log/info "Starting Webserver")
     (let [server (http-kit/run-server (wrap-defaults
                                        (all-routes (partial publish (:topic this)))
                                        api-defaults) opts)]
       (assoc this ::server server)))
   (stop [this]
-    (println "Stopping Webserver")
+    (log/info "Stopping Webserver")
     (when-let [close-fn (::server this)]
       (close-fn))))
 

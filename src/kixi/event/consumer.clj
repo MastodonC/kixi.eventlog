@@ -9,7 +9,7 @@
 (defrecord EventConsumer [consumer-config batch-size]
   component/Lifecycle
   (start [{:keys [zookeeper] :as this}]
-    (println "Starting EventConsumer")
+    (log/info "Starting EventConsumer")
     (let [consumer        (c/consumer (merge consumer-config (:opts zookeeper)))
           topic-name      (-> this :topic :name)
           topic-count-map {topic-name (:thread-count consumer-config)}
@@ -23,7 +23,7 @@
       )
     (assoc this ::consumer ))
   (stop [this]
-    (println "Stopping EventConsumer")
+    (log/info "Stopping EventConsumer")
     (when-let [i (::instance this)] (.shutdown i))
     (dissoc this ::consumer)))
 
