@@ -22,8 +22,8 @@
   ([] (let [zookeeper-host (or (System/getenv "ZK01_PORT_2181_TCP_ADDR") "localhost")
             zookeeper-port (Integer/valueOf (or (System/getenv "ZK01_PORT_2181_TCP_PORT") "2181"))
             topic (or (System/getenv "TOPIC") "events")
-            num-partitions (or (System/getenv "TOPIC_NUM_PARTITIONS") 3)
-            replication-factor (or (System/getenv "TOPIC_REPLICATION_FACTOR") 3)]
+            num-partitions (Integer/parseInt (or (System/getenv "TOPIC_NUM_PARTITIONS") "3"))
+            replication-factor (Integer/parseInt (or (System/getenv "TOPIC_REPLICATION_FACTOR") "3"))]
        (-> (map->EventLogApi
             {:web-server   (web/new-server)
              :repl-server  (Object.) ; dummy - replaced when invoked via controller.main
@@ -32,8 +32,7 @@
              :events-topic (new-topic topic
                                       :num-partitions num-partitions
                                       :replication-factor replication-factor
-                                      :topic-config {"compression.codec" 1 ;; gzip
-                                                     })})
+                                      :topic-config {})})
            (component/system-using
             {:producer [:zookeeper]
              :events-topic [:producer :zookeeper]
