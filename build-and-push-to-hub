@@ -13,11 +13,10 @@ assert_git_is_clean
 
 lein clean
 
-lein uberimage
+lein do clean, uberimage
 
 IMAGE_NAME=mastodonc/kixi.eventlog
 TAG=git-$(git rev-parse --short HEAD)
 
-docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${TAG}
-docker push ${IMAGE_NAME}:latest
+docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
 docker push ${IMAGE_NAME}:${TAG}
