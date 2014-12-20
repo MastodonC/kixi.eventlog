@@ -9,7 +9,7 @@
 
 (defrecord EventProducer []
   component/Lifecycle
-  (start [{:keys [zookeeper max-message-size]}]
+  (start [{:keys [zookeeper max-message-size] :as this}]
     (log/info "Starting EventProducer")
     (log/info "  Zookeeper is: " zookeeper)
     (log/info "  Max message size is: " max-message-size)
