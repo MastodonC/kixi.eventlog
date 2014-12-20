@@ -21,9 +21,9 @@
 (defn new-system
   ([] (let [zookeeper-connect  (or (System/getenv "ZK_CONNECT") "localhost:2181")
             topic              (or (System/getenv "TOPIC") "events")
-            num-partitions     (Integer/parseInt (or (System/getenv "TOPIC_NUM_PARTITIONS") "3"))
-            replication-factor (Integer/parseInt (or (System/getenv "TOPIC_REPLICATION_FACTOR") "3"))
-            max-message-size   (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1000000")] ;; annoying inconsistency Int vs String.
+            num-partitions     (Integer/parseInt (or (System/getenv (str (.toUpperCase topic) "_TOPIC_NUM_PARTITIONS")) "3"))
+            replication-factor (Integer/parseInt (or (System/getenv (str (.toUpperCase topic) "_TOPIC_REPLICATION_FACTOR")) "3"))
+            max-message-size   (or (System/getenv (str (.toUpperCase topic) "_TOPIC_MAX_MESSAGE_SIZE")) "1000000")] ;; annoying inconsistency Int vs String.
        (-> (map->EventLogApi
             {:web-server   (web/new-server)
              :repl-server  (Object.) ; dummy - replaced when invoked via controller.main
