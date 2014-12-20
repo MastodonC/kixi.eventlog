@@ -27,9 +27,6 @@ deployment
 To build the ``kixi.eventlog`` docker image and publish it to [Docker Hub](http://hub.docker.com)
 
 ```
-lein clean
-
 # this throws exceptions about LOGSTASH port is undefined that can be ignored
-lein uberimage
-
-docker push mastodonc/kixi.eventlog:latest
+./build-and-push-to-hub
+```
