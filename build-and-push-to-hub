@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function assert_git_is_clean() {
+    git ls-files --other --error-unmatch --exclude-standard . >/dev/null 2>&1; ec=$?
+    if test "$ec" = 0; then
+	echo "Working directory is not clean. Aborting..."
+	exit 1
+    elif test "$ec" = 1; then
+	echo Working directory is clean...
+	revision=$(git rev-parse --short HEAD)
+    else
+	echo Unknown error from ls-files
+	exit 1
+    fi
+}
+
+assert_git_is_clean
+
+lein clean
+
+lein uberjar
+
+docker push mastodonc/kixi.bifrost:latest
+docker push mastodonc/kixi.bifrost:git-${revision}
