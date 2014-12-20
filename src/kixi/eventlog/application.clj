@@ -19,7 +19,7 @@
     (component/stop-system this (keys this))))
 
 (defn new-system
-  ([] (let [zookeeper-connect     (or (System/getenv "ZK_CONNECT") "localhost:2181")
+  ([] (let [zookeeper-connect  (or (System/getenv "ZK_CONNECT") "localhost:2181")
             topic              (or (System/getenv "TOPIC") "events")
             num-partitions     (Integer/parseInt (or (System/getenv "TOPIC_NUM_PARTITIONS") "3"))
             replication-factor (Integer/parseInt (or (System/getenv "TOPIC_REPLICATION_FACTOR") "3"))
