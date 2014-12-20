@@ -17,8 +17,7 @@
            (p/producer {"metadata.broker.list" (zk/broker-list zookeeper)
                         "serializer.class" "kafka.serializer.DefaultEncoder"
                         "partitioner.class" "kafka.producer.DefaultPartitioner"
-                        "max.message.size" (str max-message-size)
-                        "compression.codec" "1"})))
+                        "max.message.size" (str max-message-size)})))
   (stop [this]
     (log/info "Stopping EventProducer")
     (when-let [i (:instance this)] (.close i))
