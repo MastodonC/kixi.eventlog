@@ -9,13 +9,15 @@
 
 (defrecord EventProducer []
   component/Lifecycle
-  (start [this]
+  (start [{:keys [zookeeper max-message-size]}]
     (log/info "Starting EventProducer")
+    (log/info "  Zookeeper is: " zookeeper)
+    (log/info "  Max message size is: " max-message-size)
     (assoc this :instance
-           (p/producer {"metadata.broker.list" (zk/broker-list (:zookeeper this))
+           (p/producer {"metadata.broker.list" (zk/broker-list zookeeper)
                         "serializer.class" "kafka.serializer.DefaultEncoder"
                         "partitioner.class" "kafka.producer.DefaultPartitioner"
-                        "max.message.size" (:max-message-size this)
+                        "max.message.size" (str max-message-size)
                         "compression.codec" "1"})))
   (stop [this]
     (log/info "Stopping EventProducer")
