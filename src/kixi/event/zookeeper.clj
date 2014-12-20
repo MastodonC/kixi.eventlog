@@ -21,5 +21,5 @@
 (defn broker-list [{:keys [opts]}]
   (clj-kafka.zk/broker-list (clj-kafka.zk/brokers opts)))
 
-(defn new-zk-client [host port]
-  (->ZookeeperClient {"zookeeper.connect" (format "%s:%d" host port)}))
+(defn new-zk-client [zk-connect]
+  (->ZookeeperClient {"zookeeper.connect" zk-connect}))

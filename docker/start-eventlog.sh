@@ -1,28 +1,20 @@
 #!/bin/bash
 
-function add_hosts_entry() {
-    local var_upper=${1^^}
+function join { local IFS="$1"; shift; echo "$*"; }
 
-    if $(grep '\b$1\b' /etc/hosts) ; then
-	echo "Retaining existing $1 entry:"
-	echo -e "\t ${!var_upper}"
-    else
-	local host_var="${var_upper}_PORT_2181_TCP_ADDR"
-	local hosts_entry="${!host_var} $1"
-	echo "Adding $1 entry"
-	echo -e "${hosts_entry}"
-	echo ${hosts_entry} >> /etc/hosts
-    fi
-}
+#Add entries for zookeeper peers.
+hosts=()
+for i in $(seq 255)
+do
+    zk_name=$(printf "ZK%02d" ${i})
+    zk_addr_name="${zk_name}_PORT_2181_TCP_ADDR"
+    zk_port_name="${zk_name}_PORT_2181_TCP_PORT"
 
-if [ -z "${ZK01_PORT_2181_TCP_ADDR}" ]; then
-    echo "No zk01 configured, exiting..."
-    exit 1;
-fi
+    [ ! -z "${!zk_addr_name}" ] && hosts+=("${!zk_addr_name}:${!zk_port_name}/kafka")
+done
 
-add_hosts_entry zk01
-add_hosts_entry zk02
-add_hosts_entry zk03
+export ZK_CONNECT=$(join , ${hosts[@]})
+echo "Zookeeper connect string is ${ZK_CONNECT}"
 
 echo "Starting uberjar..."
 java -jar /uberjar.jar
