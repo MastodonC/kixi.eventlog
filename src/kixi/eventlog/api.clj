@@ -3,7 +3,6 @@
             [clojure.tools.logging :as log]))
 
 (defn malformed? [ctx]
-  (println (get-in ctx [:request :body]))
   (if-let [body (get-in ctx [:request :body])]
     [false (assoc ctx ::body body)]
     true))
