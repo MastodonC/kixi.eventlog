@@ -17,8 +17,18 @@ do
     [ ! -z "${!zk_addr_name}" ] && hosts+=("${!zk_addr_name}:${!zk_port_name}")
 done
 
+topics=()
+for t in {1..255}
+do
+    topic_name=$(printf "TOPIC%02d" ${t})
+    [ ! -z "${!topic_name}" ] && topics+=("\"${!topic_name}\"")
+done
+
+export TOPICS="#{${topics[@]}}"
+
 export ZK_CONNECT="$(join , ${hosts[@]})${ZK_CHROOT}"
 echo "Zookeeper connect string is ${ZK_CONNECT}"
+echo "TOPICS is ${TOPICS}"
 
 echo "Starting uberjar..."
 java -jar /uberjar.jar
