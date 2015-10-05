@@ -41,6 +41,12 @@
 
                  [net.logstash.logback/logstash-logback-encoder "4.5.1"]]
 
+  :java-source-paths ["java-src"]
+  :javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
+
+  :main ^:skip-aot kixi.eventlog.Bootstrap
+  :repl-options {:init-ns user}
+
   :plugins [[com.palletops/uberimage "0.3.0"]]
 
   :uberimage {:base-image "mastodonc/basejava"

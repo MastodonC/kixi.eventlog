@@ -1,5 +1,4 @@
-(ns kixi.eventlog.main
-  (:gen-class)
+(ns kixi.eventlog.bootstrap
   (:require [cider.nrepl                :refer (cider-nrepl-handler)]
             [clojure.tools.cli          :refer [cli]]
             [clojure.tools.logging      :as log]
@@ -26,7 +25,7 @@
       (cond-> (:repl opts)
               (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
-(defn -main [& args]
+(defn bootstrap [args]
   (log/info "Starting kixi.eventlog")
   (let [[opts args banner]
         (cli args
