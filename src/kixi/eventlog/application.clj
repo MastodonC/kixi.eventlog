@@ -25,7 +25,7 @@
                                            "3"))
                   :replication-factor (Integer/valueOf 
                                        (or (System/getenv (str (.toUpperCase topic-name) "_TOPIC_REPLICATION_FACTOR"))
-                                           "3") )
+                                           "2") )
                   :max-message-size   max-message-size}) topic-names)))
 
 (defn parse-topics [topics]
