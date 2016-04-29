@@ -38,8 +38,7 @@
                  [org.slf4j/jul-to-slf4j                        "1.7.12"]
                  [org.slf4j/jcl-over-slf4j                      "1.7.12"]
                  [org.slf4j/log4j-over-slf4j                    "1.7.12"]
-
-                 [net.logstash.logback/logstash-logback-encoder "4.5.1"]]
+                 [net.logstash.logback/logstash-logback-encoder "4.6"]]
 
   :java-source-paths ["java-src"]
   :javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
