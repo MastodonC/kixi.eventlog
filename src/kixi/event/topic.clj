@@ -1,47 +1,48 @@
 (ns kixi.event.topic
-  (:require [clj-kafka.core :as kafka]
+  (:require [clj-kafka.consumer.zk :as c]
+            [clj-kafka.core :as kafka]
             [clj-kafka.producer :as p]
-            [clj-kafka.consumer.zk :as c]
-            [com.stuartsierra.component :as component]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [com.stuartsierra.component :as component]))
 
-;; From http://stackoverflow.com/questions/16946778/how-can-we-create-a-topic-in-kafka-from-the-ide-using-api
 
-;; seems overly complex, but works...
+(defn topic-exists? [zk-client topic-name]
+  (kafka.admin.AdminUtils/topicExists zk-client topic-name))
 
-(defn create-topic [{:keys [zookeeper num-partitions replication-factor topic-config]} topic-name ]
-  (let [zk-connect (get-in zookeeper[:opts "zookeeper.connect"])
-        client     (org.I0Itec.zkclient.ZkClient. zk-connect
-                                                  10000 ; sessionTimeoutMs
-                                                  10000 ; connectionTimeoutMs
-                                                  kafka.utils.ZKStringSerializer$/MODULE$)]
-    (try
-      (kafka.admin.AdminUtils/createTopic client
-                                          topic-name
-                                          num-partitions
-                                          replication-factor
-                                          (kafka/as-properties topic-config))
-      (finally
-        (.close client)))))
+(defn- create-topic [zk-client topic-name {:keys [num-partitions replication-factor topic-config] :as opts} ]
+  (log/infof "Creating topic %s, config: %s" topic-name (pr-str opts))
+  (kafka.admin.AdminUtils/createTopic zk-client
+                                      topic-name
+                                      num-partitions
+                                      replication-factor
+                                      (kafka/as-properties topic-config)))
 
-(defrecord EventTopic [name]
+(defrecord EventTopics [topic-defs]
   component/Lifecycle
   (start [this]
-    (log/info "Starting EventTopic " (:name this))
-    (try
-      (create-topic this name)
-      (catch kafka.common.TopicExistsException _
-        (log/info (:name this) " topic already exists")))
+    (log/info "Starting EventTopics " (:topic-defs this))
+    (let [zk-connect (get-in (:zookeeper this) [:opts "zookeeper.connect"])
+          zk-client  (org.I0Itec.zkclient.ZkClient. zk-connect
+                                                    10000 ; sessionTimeoutMs
+                                                    10000 ; connectionTimeoutMs
+                                                    kafka.utils.ZKStringSerializer$/MODULE$)]
+      (try 
+        (doseq [[topic-name opts] (:topic-defs this)
+                :when (not (topic-exists? zk-client topic-name))]
+          (create-topic zk-client topic-name opts))
+        (finally
+          (.close zk-client))))
     this)
   (stop [this]
-    (log/info "Stopping EventTopic" (:name this))
+    (log/info "Stopping EventTopics" (:name this))
     this))
 
-(defn publish [topic event]
-  (let [producer (-> topic :producer :instance)
-        topic-name (-> topic :name)]
-    (p/send-message producer (p/message topic-name (.bytes event)))))
+(defn publish [producer topic-name event]
+  (log/info "producer:" producer )
+  (log/info "topic-name:" topic-name)
+  (log/info "event:" event)
+  (p/send-message (:kixi.event.producer/instance producer) (p/message topic-name (.bytes event))))
 
-(defn new-topic [name & {:as opts}]
-  (map->EventTopic (assoc opts
-                     :name name)))
+(defn new-topics 
+  ([topic-defs]
+   (map->EventTopics {:topic-defs topic-defs})))

@@ -1,16 +1,14 @@
 (ns user
-  (:require
-
-   ;; DO NOT ADD ANYTHING HERE THAT MIGHT REMOTELY HAVE A COMPILATION ERROR.
+  (:require ;; DO NOT ADD ANYTHING HERE THAT MIGHT REMOTELY HAVE A COMPILATION ERROR.
    ;; THIS IS TO ENSURE WE CAN ALWAYS GET A REPL STARTED.
    ;;
    ;; see (init) below.
 
    [com.stuartsierra.component :as component]
-   [clojure.tools.namespace.repl :refer [refresh refresh-all]]
    [clojure.pprint :refer (pprint)]
    [clojure.reflect :refer (reflect)]
-   [clojure.repl :refer (apropos dir doc find-doc pst source)]))
+   [clojure.repl :refer (apropos dir doc find-doc pst source)]
+   [clojure.tools.namespace.repl :refer [refresh refresh-all]]))
 
 (defn init
   "Constructs the current development system."
