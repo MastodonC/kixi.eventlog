@@ -7,7 +7,9 @@
             [kixi.eventlog.api :refer [index-resource]]
             [kixi.event.topic :refer [publish]]
             [org.httpkit.server :as http-kit]
-            [ring.middleware.defaults :refer [wrap-defaults api-defaults]]))
+            [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
+            [buddy.sign.jwt :as jwt]
+            [kixi.eventlog.authz :as authz]))
 
 (defn status-routes []
   (routes
@@ -33,7 +35,7 @@
   (start [this]
     (log/info "Starting Webserver")
     (let [routes                       (routes
-                                        (topic-routes (:producer this) (-> this :topics :topic-defs keys))
+                                        (authz/maybe-wrap-authentication (:auth opts) (topic-routes (:producer this) (-> this :topics :topic-defs keys)))
                                         (status-routes)
                                         (not-found {:headers {"Content-Type" "application/json"}
                                                     :body    "{\"error\": \"No Such Endpoint\"}"}))]
@@ -47,8 +49,9 @@
     (when-let [close-fn (::server this)]
       (close-fn))))
 
-(defn new-server []
+(defn new-server [auth]
   (->WebServer {:verbose? true
                 :port 8080
                 :max-body
-                (* 16 1024 1024)}))
+                (* 16 1024 1024)
+                :auth auth}))
