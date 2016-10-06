@@ -22,7 +22,8 @@
         (do (log/warn "Unauthenticated") {:status 401 :body "Unauthenticated"})))))
 
 (defn maybe-wrap-authentication
-  [auth handler]
+  [auth]
+  (log/info "maybe-wrap-auth" auth)
   (if auth
     (partial wrap-authentication auth)
     identity))

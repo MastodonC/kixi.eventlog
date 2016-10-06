@@ -20,7 +20,7 @@
   (let [new-system (resolve 'kixi.eventlog.application/new-system)
         instance (resolve 'kixi.eventlog.application/instance)]
     (alter-var-root instance
-                    (constantly (new-system)))))
+                    (constantly (new-system :development)))))
 
 (defn start
   "Starts the current development system."

@@ -23,7 +23,7 @@
 (defn build-application [system opts]
   (-> system
       (cond-> (:repl opts)
-              (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
+        (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
 (defn bootstrap [args]
   (log/info "Starting kixi.eventlog")
@@ -34,7 +34,9 @@
              ["-R" "--repl" "Start a REPL"
               :flag true :default true]
              ["-r" "--repl-port" "REPL server listen port"
-              :default 4001 :parse-fn #(Integer/valueOf %)])]
+              :default 4001 :parse-fn #(Integer/valueOf %)]
+             ["-P" "--profile" "Environment profile"
+              :default :development :parse-fn keyword])]
     (when (:help opts)
       (log/info banner)
       (System/exit 0))

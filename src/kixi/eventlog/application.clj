@@ -33,30 +33,30 @@
   (re-seq #"[\w-]+" topics))
 
 (defn config
-  []
-  (try (aero/read-config "eventlog.edn")
-       (catch java.io.FileNotFoundException _ (log/info "no authentication config (assume no auth needed!)"))
-       (finally (log/info "continuing"))))
+  [profile]
+  (try (aero/read-config "eventlog.edn" {:profile profile})
+       (catch java.io.FileNotFoundException _ (log/info "no authentication config (assume no auth needed!)"))))
 
 (defn new-system
-  ([] (let [zookeeper-connect (or (System/getenv "ZK_CONNECT") "localhost:2181")
-            max-message-size  (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1000000")
-            producer          (new-producer :max-message-size max-message-size)
-            topic-names       (or (System/getenv "TOPICS")
-                                  "flight_events01 hotel_events01")
-            topics            (new-topics
-                               (topic-definitions max-message-size
-                                                  (parse-topics topic-names)))
-            auth              (:auth (config))]
-        (-> (map->EventLogApi
-             {:web-server  (web/new-server auth)
-              :repl-server (Object.) ; dummy - replaced when invoked via controller.main
-              :zookeeper   (new-zk-client zookeeper-connect)
-              :topics      topics
-              :producer    producer})
-            (component/system-using
-             {:producer   [:zookeeper]
-              :topics     [:zookeeper]
-              :web-server [:producer :topics]}))))
-  ([extra-components]
+  ([profile] (let [zookeeper-connect (or (System/getenv "ZK_CONNECT") "localhost:2181")
+                   max-message-size  (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1000000")
+                   producer          (new-producer :max-message-size max-message-size)
+                   topic-names       (or (System/getenv "TOPICS")
+                                         "flight_events01 hotel_events01")
+                   topics            (new-topics
+                                      (topic-definitions max-message-size
+                                                         (parse-topics topic-names)))
+                   _ (log/info "AUTH" (config profile))
+                   auth              (:auth (config profile))]
+               (-> (map->EventLogApi
+                    {:web-server  (web/new-server auth)
+                     :repl-server (Object.) ; dummy - replaced when invoked via controller.main
+                     :zookeeper   (new-zk-client zookeeper-connect)
+                     :topics      topics
+                     :producer    producer})
+                   (component/system-using
+                    {:producer   [:zookeeper]
+                     :topics     [:zookeeper]
+                     :web-server [:producer :topics]}))))
+  ([profile extra-components]
    (merge (new-system) extra-components)))
