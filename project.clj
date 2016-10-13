@@ -42,7 +42,8 @@
                  [buddy "1.0.0"]
                  [clj-http "2.3.0"]
                  [clj-time "0.12.0"]
-                 [aero "1.0.1"]]
+                 [aero "1.0.1"]
+                 [ring-basic-authentication "1.0.5"]]
 
   :java-source-paths ["java-src"]
   :javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
