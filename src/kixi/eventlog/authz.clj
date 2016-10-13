@@ -26,10 +26,9 @@
         (log/warn "Unauthenticated")))))
 
 (defn maybe-wrap-authentication
-  [auth]
+  [authentication? auth]
   (fn [handler]
-    (log/info "maybe-wrap-auth" auth)
-    (if auth
+    (if authentication?
       (basic-auth/wrap-basic-authentication handler (authentication-fn auth))
       (fn [request]
         (handler request))))

@@ -36,12 +36,14 @@
              ["-r" "--repl-port" "REPL server listen port"
               :default 4001 :parse-fn #(Integer/valueOf %)]
              ["-P" "--profile" "Environment profile"
-              :default :development :parse-fn keyword])]
+              :default :development :parse-fn keyword]
+             ["-a" "--authentication" "Do we want authentication?"
+              :flag true :default false])]
     (when (:help opts)
       (log/info banner)
       (System/exit 0))
     (alter-var-root #'kixi/instance (fn [_]
                                       (component/start
                                        (build-application
-                                        (kixi/new-system)
+                                        (kixi/new-system opts)
                                         opts))))))

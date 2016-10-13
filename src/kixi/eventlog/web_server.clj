@@ -29,19 +29,19 @@
     (apply routes topic-routes)))
 
 (defn app
-  [component auth]
+  [component authentication? auth]
   (routes
    status-routes
-   (wrap-routes  (topic-routes component)  (authz/maybe-wrap-authentication auth))
+   (wrap-routes  (topic-routes component) (authz/maybe-wrap-authentication authentication? auth))
    (not-found {:headers {"Content-Type" "application/json"}
                :body    "{\"error\": \"No Such Endpoint\"}"})))
 
-(defrecord WebServer [opts auth]
+(defrecord WebServer [opts authentication? auth]
   component/Lifecycle
   (start [this]
     (log/info "Starting Webserver")
     (let [server (http-kit/run-server (wrap-defaults
-                                       (app this auth)
+                                       (app this authentication? auth)
                                        api-defaults)
                                       opts)]
       (assoc this ::server server)))
@@ -50,9 +50,10 @@
     (when-let [close-fn (::server this)]
       (close-fn))))
 
-(defn new-server [auth]
+(defn new-server [authentication? auth]
   (->WebServer {:verbose? true
                 :port 8081
                 :max-body
                 (* 16 1024 1024)}
+               authentication?
                auth))

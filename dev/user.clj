@@ -20,7 +20,8 @@
   (let [new-system (resolve 'kixi.eventlog.application/new-system)
         instance (resolve 'kixi.eventlog.application/instance)]
     (alter-var-root instance
-                    (constantly (new-system :development)))))
+                    (constantly (new-system {:profile :development
+                                             :authentication true})))))
 
 (defn start
   "Starts the current development system."

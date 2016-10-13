@@ -1,0 +1,4 @@
+{:auth {:public-key #profile {:development "auth_pubkey.pem"
+                              :production "/root/prod_pubkey.pem"}
+        :heimdall #profile {:development "http://localhost:3002"
+                            :production "http://heimdall.marathon.mesos:3000"}} }
