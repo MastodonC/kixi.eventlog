@@ -47,4 +47,4 @@ if [ -z "${SECRETS_BUCKET}" ]; then
 fi
 
 echo "Starting uberjar..."
-java -jar /uberjar.jar --authentication $AUTHENTICATION --profile production
+java -jar /root/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production

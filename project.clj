@@ -53,7 +53,10 @@
 
   :plugins [[com.palletops/uberimage "0.3.0"]]
 
-  :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
+  :profiles {:uberjar {:aot [kixi.eventlog.Bootstrap]
+                       :main kixi.eventlog.Bootstrap
+                       :uberjar-name "kixi.eventlog.jar"}
+              :dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.10"]]
-                   :source-paths ["dev" "src"]
-                   :resource-paths ["dev-resources" "resources"]}})
+                    :source-paths ["dev" "src"]
+                    :resource-paths ["dev-resources" "resources"]}})
