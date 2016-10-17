@@ -37,5 +37,14 @@ fi
 echo "Zookeeper connect string is ${ZK_CONNECT}"
 echo "TOPICS is ${TOPICS}"
 
+if [ -z "${SECRETS_BUCKET}" ]; then
+    curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/root/awscli-bundle.zip"
+    unzip /root/awscli-bundle.zip -d /root/
+    /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+    echo "aws cli installed"
+    aws s3 cp s3://$SECRETS_BUCKET/prod_pubkey.edn /root/prod_pubkey.edn
+    echo "public key downloaded"
+fi
+
 echo "Starting uberjar..."
-java -jar /uberjar.jar
+java -jar /uberjar.jar --authentication $AUTHENTICATION --profile production

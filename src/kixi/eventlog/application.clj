@@ -36,7 +36,7 @@
 (defn config
   [profile]
   (try (aero/read-config (io/resource "eventlog.edn") {:resolver aero/relative-resolver :profile profile})
-       (catch java.io.FileNotFoundException _ (log/info "no authentication config (assume no auth needed!)"))))
+       (catch java.io.FileNotFoundException _ (log/info "no authentication config found"))))
 
 (defn new-system
   ([{:keys [profile authentication]}]

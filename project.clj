@@ -53,14 +53,7 @@
 
   :plugins [[com.palletops/uberimage "0.3.0"]]
 
-  :uberimage {:base-image "mastodonc/basejava"
-              :instructions ["EXPOSE 4001"]
-              :cmd ["/bin/bash" "/start-eventlog"]
-              :files {"start-eventlog" "docker/start-eventlog.sh"}
-              :tag "mastodonc/kixi.eventlog"}
-
   :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.10"]]
-                   :plugins [[com.palletops/uberimage "0.3.0"]]
                    :source-paths ["dev" "src"]
                    :resource-paths ["dev-resources" "resources"]}})
