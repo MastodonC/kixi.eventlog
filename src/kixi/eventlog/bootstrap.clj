@@ -4,7 +4,9 @@
             [clojure.tools.logging      :as log]
             [clojure.tools.nrepl.server :as nrepl-server]
             [com.stuartsierra.component :as component]
-            [kixi.eventlog.application  :as kixi]))
+            [kixi.eventlog.application  :as kixi])
+  (:gen-class))
+
 
 (defrecord ReplServer [config]
   component/Lifecycle
@@ -25,7 +27,7 @@
       (cond-> (:repl opts)
         (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
-(defn bootstrap [args]
+(defn main [args]
   (log/info "Starting kixi.eventlog")
   (let [[opts args banner]
         (cli args
