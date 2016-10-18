@@ -52,7 +52,7 @@
 
 (defn new-server [authentication? auth]
   (->WebServer {:verbose? true
-                :port 8081
+                :port 8080
                 :max-body
                 (* 16 1024 1024)}
                authentication?
