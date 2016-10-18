@@ -27,7 +27,7 @@
       (cond-> (:repl opts)
         (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
-(defn main [args]
+(defn -main [& args]
   (log/info "Starting kixi.eventlog")
   (let [[opts args banner]
         (cli args
