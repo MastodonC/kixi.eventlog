@@ -12,7 +12,7 @@
 
 (defn init
   "Constructs the current development system."
-  []
+  [topics]
   ;; We do some gymnastics here to make sure that the REPL can always start
   ;; even in the presence of compilation errors.
   (require '[kixi.eventlog.application])
@@ -21,7 +21,8 @@
         instance (resolve 'kixi.eventlog.application/instance)]
     (alter-var-root instance
                     (constantly (new-system {:profile :development
-                                             :authentication true})))))
+                                             :authentication false
+                                             :topics topics})))))
 
 (defn start
   "Starts the current development system."
@@ -35,8 +36,8 @@
 
 (defn go
   "Initializes the current development system and starts it running."
-  []
-  (init)
+  [topics]
+  (init topics)
   (start)
   nil)
 
