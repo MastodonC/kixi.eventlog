@@ -50,10 +50,10 @@
     (when-let [close-fn (::server this)]
       (close-fn))))
 
-(defn new-server [authentication? auth]
+(defn new-server [authentication? auth max-message-size]
   (->WebServer {:verbose? true
                 :port 8080
                 :max-body
-                (* 16 1024 1024)}
+                max-message-size}
                authentication?
                auth))

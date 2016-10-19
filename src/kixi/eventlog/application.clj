@@ -40,17 +40,17 @@
 
 (defn new-system
   ([{:keys [profile authentication]}]
-   (let [zookeeper-connect (or (System/getenv "ZK_CONNECT") "localhost:2181")
-         max-message-size  (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1000000")
+   (let [config            (config profile)
+         zookeeper-connect (:zookeeper config)
+         max-message-size  (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") "1048576")
          producer          (new-producer :max-message-size max-message-size)
-         topic-names       (or (System/getenv "TOPICS")
-                               "flight_events01 hotel_events01")
+         topic-names       (System/getenv "TOPICS")
          topics            (new-topics
                             (topic-definitions max-message-size
                                                (parse-topics topic-names)))
          auth              (:auth (config profile))]
      (-> (map->EventLogApi
-          {:web-server  (web/new-server authentication auth)
+          {:web-server  (web/new-server authentication auth (Integer/valueOf max-message-size))
            :repl-server (Object.) ; dummy - replaced when invoked via controller.main
            :zookeeper   (new-zk-client zookeeper-connect)
            :topics      topics
