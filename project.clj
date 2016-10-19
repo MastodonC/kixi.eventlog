@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure                           "1.7.0"]
+  :dependencies [[org.clojure/clojure                           "1.8.0"]
                  [org.clojure/core.async                        "0.1.346.0-17112a-alpha"]
                  [joda-time                                     "2.8.2"]
                  [com.fasterxml.jackson.core/jackson-databind   "2.6.2"]
@@ -38,24 +38,25 @@
                  [org.slf4j/jul-to-slf4j                        "1.7.12"]
                  [org.slf4j/jcl-over-slf4j                      "1.7.12"]
                  [org.slf4j/log4j-over-slf4j                    "1.7.12"]
-                 [net.logstash.logback/logstash-logback-encoder "4.6"]]
+                 [net.logstash.logback/logstash-logback-encoder "4.6"]
+                 [buddy "1.0.0"]
+                 [clj-http "2.3.0"]
+                 [clj-time "0.12.0"]
+                 [aero "1.0.1"]
+                 [ring-basic-authentication "1.0.5"]]
 
   :java-source-paths ["java-src"]
-  :javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
+  :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
 
   :main ^:skip-aot kixi.eventlog.Bootstrap
   :repl-options {:init-ns user}
 
   :plugins [[com.palletops/uberimage "0.3.0"]]
 
-  :uberimage {:base-image "mastodonc/basejava"
-              :instructions ["EXPOSE 4001"]
-              :cmd ["/bin/bash" "/start-eventlog"]
-              :files {"start-eventlog" "docker/start-eventlog.sh"}
-              :tag "mastodonc/kixi.eventlog"}
-
-  :profiles {:dev {:dependencies [[lein-marginalia "0.8.0"]
+  :profiles {:uberjar {:aot [kixi.eventlog.bootstrap]
+                       :main kixi.eventlog.bootstrap
+                       :uberjar-name "kixi.eventlog.jar"}
+              :dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.10"]]
-                   :plugins [[com.palletops/uberimage "0.3.0"]]
-                   :source-paths ["dev" "src"]
-                   :resource-paths ["dev-resources" "resources"]}})
+                    :source-paths ["dev" "src"]
+                    :resource-paths ["dev-resources" "resources"]}})

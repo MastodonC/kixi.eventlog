@@ -4,7 +4,9 @@
             [clojure.tools.logging      :as log]
             [clojure.tools.nrepl.server :as nrepl-server]
             [com.stuartsierra.component :as component]
-            [kixi.eventlog.application  :as kixi]))
+            [kixi.eventlog.application  :as kixi])
+  (:gen-class))
+
 
 (defrecord ReplServer [config]
   component/Lifecycle
@@ -23,9 +25,9 @@
 (defn build-application [system opts]
   (-> system
       (cond-> (:repl opts)
-              (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
+        (assoc :repl-server (mk-repl-server {:port (:repl-port opts)})))))
 
-(defn bootstrap [args]
+(defn -main [& args]
   (log/info "Starting kixi.eventlog")
   (let [[opts args banner]
         (cli args
@@ -34,12 +36,16 @@
              ["-R" "--repl" "Start a REPL"
               :flag true :default true]
              ["-r" "--repl-port" "REPL server listen port"
-              :default 4001 :parse-fn #(Integer/valueOf %)])]
+              :default 4001 :parse-fn #(Integer/valueOf %)]
+             ["-P" "--profile" "Environment profile"
+              :default :development :parse-fn keyword]
+             ["-a" "--authentication" "Do we want authentication?"
+              :flag true :default false])]
     (when (:help opts)
       (log/info banner)
       (System/exit 0))
     (alter-var-root #'kixi/instance (fn [_]
                                       (component/start
                                        (build-application
-                                        (kixi/new-system)
+                                        (kixi/new-system opts)
                                         opts))))))
