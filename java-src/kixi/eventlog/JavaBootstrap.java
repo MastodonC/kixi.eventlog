@@ -6,7 +6,7 @@ import clojure.lang.IFn;
 /**
  * We've had a lot of problems with aot. This bootstraps our clojure code from java avoiding that completely.
  */
-class Bootstrap {
+class JavaBootstrap {
 
     public static void main(String[] args) {
 

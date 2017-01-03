@@ -48,7 +48,7 @@
   :java-source-paths ["java-src"]
   :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
 
-  :main ^:skip-aot kixi.eventlog.Bootstrap
+  :main ^:skip-aot kixi.eventlog.JavaBootstrap
   :repl-options {:init-ns user}
 
   :plugins [[com.palletops/uberimage "0.3.0"]]
