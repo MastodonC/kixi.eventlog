@@ -15,11 +15,17 @@ deployment prerequesites
 docker login
 ```
 
-- You need to arrange to have docker listening on a tcp port... It should start with a command like (no trailing slash on the tcp://* bit):
+- Choose whether the docker image should use authentication. If not, use:
+```
+docker build -t mastodonc/kixi.eventlog --build-arg AUTHENTICATION=false .
+```
 
+- If authentication is required, then the secrets need to be downloaded from an S3 bucket
 ```
-/usr/bin/docker -d -H fd:// -H tcp://localhost:2375
+docker build -t mastodonc/kixi.eventlog.auth --build-arg SECRETS_BUCKET=your-bucket --build-arg AUTHENTICATION=true --build-arg AWS_REGION=eu-central-1 .
 ```
+
+
 
 deployment
 ----------
