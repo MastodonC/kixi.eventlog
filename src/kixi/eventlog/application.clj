@@ -1,11 +1,10 @@
 (ns kixi.eventlog.application
-  (:require [clojure.tools.logging :as log]
+  (:require [taoensso.timbre :as log]
             [clojure.java.io :as io]
             [com.stuartsierra.component :as component]
             [kixi.eventlog.web-server :as web]
             [kixi.event.producer :refer [new-producer]]
             [kixi.event.topic :refer [new-topics]]
-            [kixi.event.zookeeper :refer [new-zk-client]]
             [aero.core :as aero]))
 
 (def instance)
@@ -43,21 +42,20 @@
    (let [config            (config profile)
          zookeeper-connect (:zookeeper config)
          max-message-size  (or (System/getenv "TOPIC_MAX_MESSAGE_SIZE") (str (* 16 1024 1024)))
-         producer          (new-producer :max-message-size max-message-size)
+         producer          (new-producer :max-message-size max-message-size
+                                         :zookeeper zookeeper-connect)
          topic-names       (or (System/getenv "TOPICS") topics)
          topics            (new-topics
-                            (topic-definitions max-message-size
-                                               (parse-topics topic-names)))
-         auth              (:auth (config profile))]
+                            :topic-defs (topic-definitions max-message-size
+                                                           (parse-topics topic-names))
+                            :zookeeper zookeeper-connect)
+         auth              (:auth config)]
      (-> (map->EventLogApi
           {:web-server  (web/new-server authentication auth (Integer/valueOf max-message-size))
            :repl-server (Object.) ; dummy - replaced when invoked via controller.main
-           :zookeeper   (new-zk-client zookeeper-connect)
            :topics      topics
            :producer    producer})
          (component/system-using
-          {:producer   [:zookeeper]
-           :topics     [:zookeeper]
-           :web-server [:producer :topics]}))))
+          {:web-server [:producer :topics]}))))
   ([opts extra-components]
    (merge (new-system opts) extra-components)))

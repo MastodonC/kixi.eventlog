@@ -1,7 +1,7 @@
 (ns kixi.eventlog.bootstrap
   (:require [cider.nrepl                :refer (cider-nrepl-handler)]
             [clojure.tools.cli          :refer [cli]]
-            [clojure.tools.logging      :as log]
+            [taoensso.timbre      :as log]
             [clojure.tools.nrepl.server :as nrepl-server]
             [com.stuartsierra.component :as component]
             [kixi.eventlog.application  :as kixi])

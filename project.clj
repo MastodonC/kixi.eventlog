@@ -4,15 +4,17 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure                           "1.8.0"]
-                 [org.clojure/core.async                        "0.1.346.0-17112a-alpha"]
+                 [org.clojure/core.async                        "0.2.391"]
                  [joda-time                                     "2.8.2"]
                  [com.fasterxml.jackson.core/jackson-databind   "2.6.2"]
                  [amazonica                                     "0.3.33"
                   :exclusions [joda-time
                                com.fasterxml.jackson.core/jackson-core
                                com.fasterxml.jackson.core/jackson-annotations]]
-                 [mastodonc/clj-kafka                           "0.2.6-0.8.2.2"
-                  :exclusions [org.slf4j/slf4j-log4j12]]
+                 [com.taoensso/timbre                           "4.8.0"]
+                 [mastondonc/franzy                             "0.0.3"]
+                 [lbradstreet/franzy-admin                      "0.0.2"
+                  :exclusions [com.taoensso/timbre]]
                  [compojure                                     "1.4.0"]
 
                  [commons-codec                                 "1.10"] ;; FIXME - ring-defaults needs this, but doesn't declare it?
@@ -28,17 +30,9 @@
 
                  [com.stuartsierra/component                    "0.3.0"]
 
-                 [prismatic/schema                              "1.0.1"]
+                 [prismatic/schema                              "1.1.3"]
                  [org.clojure/tools.nrepl                       "0.2.11"]
                  [cider/cider-nrepl                             "0.9.1"]
-
-                 ;; Logging
-                 [org.clojure/tools.logging                     "0.3.1"]
-                 [ch.qos.logback/logback-classic                "1.1.3"]
-                 [org.slf4j/jul-to-slf4j                        "1.7.12"]
-                 [org.slf4j/jcl-over-slf4j                      "1.7.12"]
-                 [org.slf4j/log4j-over-slf4j                    "1.7.12"]
-                 [net.logstash.logback/logstash-logback-encoder "4.6"]
                  [buddy "1.0.0"]
                  [clj-http "2.3.0"]
                  [clj-time "0.12.0"]
@@ -56,7 +50,7 @@
   :profiles {:uberjar {:aot [kixi.eventlog.bootstrap]
                        :main kixi.eventlog.bootstrap
                        :uberjar-name "kixi.eventlog.jar"}
-              :dev {:dependencies [[lein-marginalia "0.8.0"]
+             :dev {:dependencies [[lein-marginalia "0.8.0"]
                                   [org.clojure/tools.namespace "0.2.10"]]
-                    :source-paths ["dev" "src"]
-                    :resource-paths ["dev-resources" "resources"]}})
+                   :source-paths ["dev" "src"]
+                   :resource-paths ["dev-resources" "resources"]}})
