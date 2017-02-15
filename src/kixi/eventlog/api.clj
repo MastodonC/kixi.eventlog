@@ -1,6 +1,6 @@
 (ns kixi.eventlog.api
   (:require [liberator.core :refer (defresource)]
-            [clojure.tools.logging :as log]))
+            [taoensso.timbre :as log]))
 
 (defn malformed? [ctx]
   (if-let [body (get-in ctx [:request :body])]

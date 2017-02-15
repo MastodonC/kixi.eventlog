@@ -1,6 +1,6 @@
 (ns kixi.eventlog.web-server
   (:require [clojure.string :as str]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [compojure.core :refer [make-route routes POST GET defroutes wrap-routes]]
             [compojure.route :refer [not-found]]
             [com.stuartsierra.component :as component]

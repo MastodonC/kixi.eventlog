@@ -5,7 +5,7 @@
             [clj-http.client :as client]
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
-            [clojure.tools.logging :as log]
+            [taoensso.timbre :as log]
             [clojure.data.json :as json]
             [ring.middleware.basic-authentication :as basic-auth]))
 
