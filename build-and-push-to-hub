@@ -16,7 +16,7 @@ lein do clean, uberjar
 IMAGE_NAME=mastodonc/kixi.eventlog
 TAG=git-$(git rev-parse --short=12 HEAD)
 
-docker build -t ${IMAGE_NAME} .
+docker build --build-arg AUTHENTICATION=false -t ${IMAGE_NAME} .
 docker tag -f ${IMAGE_NAME} ${IMAGE_NAME}:latest
 docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${TAG}
 docker push ${IMAGE_NAME}
