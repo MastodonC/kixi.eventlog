@@ -53,5 +53,5 @@ if [[ "${SECRETS_BUCKET}" ]]; then
 fi
 
 echo "Starting uberjar..."
-echo "java -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production"
-java "-Xmx${XMX}m" /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production
+echo "java -Xmx${XMX}m -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production"
+java "-Xmx${XMX}m" -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production
