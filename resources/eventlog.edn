@@ -3,4 +3,4 @@
         :heimdall #profile {:development "http://localhost:3002"
                             :production "http://heimdall.marathon.mesos:3000"}}
  :zookeeper #profile {:development "localhost:2181/"
-                      :production "master.mesos:2181/"}}
+                      :production #or [#env ZK_CONNECT "master.mesos:2181/dcos-service-kafka"]}}
