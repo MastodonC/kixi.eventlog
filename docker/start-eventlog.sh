@@ -54,4 +54,4 @@ fi
 
 echo "Starting uberjar..."
 echo "java -Xmx${XMX}m -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production"
-java "-Xmx${XMX}m" -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production
+java "-Xmx${XMX}m" -jar /srv/kixi.eventlog.jar --profile production
