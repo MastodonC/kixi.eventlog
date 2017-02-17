@@ -2,6 +2,12 @@
 
 function join { local IFS="$1"; shift; echo "$*"; }
 
+CGROUPS_MEM=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
+MEMINFO_MEM=$(($(awk '/MemTotal/ {print $2}' /proc/meminfo)*1024))
+MEM=$(($MEMINFO_MEM>$CGROUPS_MEM?$CGROUPS_MEM:$MEMINFO_MEM))
+JVM_PEER_HEAP_RATIO=${JVM_PEER_HEAP_RATIO:-0.6}
+XMX=$(awk '{printf("%d",$1*$2/1024^2)}' <<< " ${MEM} ${JVM_PEER_HEAP_RATIO} ")
+
 if [ -z "${ZK_CONNECT}" ] ; then
 
     ZK_CHROOT=${ZK_CHROOT:-/}
@@ -48,4 +54,4 @@ fi
 
 echo "Starting uberjar..."
 echo "java -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production"
-java -jar /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production
+java "-Xmx${XMX}m" /srv/kixi.eventlog.jar --authentication $AUTHENTICATION --profile production
