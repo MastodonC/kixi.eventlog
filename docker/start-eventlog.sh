@@ -37,7 +37,7 @@ fi
 echo "Zookeeper connect string is ${ZK_CONNECT}"
 echo "TOPICS is ${TOPICS}"
 
-if [ -z "${SECRETS_BUCKET}" ]; then
+if [["${SECRETS_BUCKET}"]]; then
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "/root/awscli-bundle.zip"
     unzip /root/awscli-bundle.zip -d /root/
     /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
